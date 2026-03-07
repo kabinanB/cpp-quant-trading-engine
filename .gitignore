@@ -17,8 +17,7 @@ dist/
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
-Makefile
-*.cmake
+# Exclude generated cmake files, but INCLUDE CMakeLists.txt
 
 # ============================================================================
 # IDE & EDITOR
@@ -33,9 +32,8 @@ Makefile
 *.VC.db
 
 # ============================================================================
-# RUNTIME FILES
+# RUNTIME FILES (only ignore specific data files, not docs)
 # ============================================================================
-*.txt
 *.log
 *.tmp
 
