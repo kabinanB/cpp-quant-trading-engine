@@ -3,8 +3,6 @@
 #include <fstream>
 #include <cstring>
 #include <cstdlib>
-#include "analytics.h"
-#include "portfolio.h"
 #include "EuropeanCall.h"
 #include "EuropeanPut.h"
 
