@@ -132,7 +132,7 @@ You will need the following installed on your system:
 
 1.  **Clone the repository:**
     ```bash
-    git clone <repository_url>
+    git clone https://github.com/kabinanB/cpp-quant-trading-engine.git
     cd cpp-quant-trading-engine
     ```
 
