@@ -78,8 +78,6 @@ $$C - P = S - K \cdot e^{-rT}$$
 
 - **Call price bounds:** `max(S − Ke^{−rT}, 0) ≤ C ≤ S`
 - **Put price bounds:** `max(Ke^{−rT} − S, 0) ≤ P ≤ Ke^{−rT}`
-- As `T → 0`: both prices converge to their intrinsic values.
-- As `σ → 0`: the option is worth its discounted intrinsic value.
 
 Where:
 *   `S`: Current stock price
