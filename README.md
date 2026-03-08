@@ -1,4 +1,4 @@
-Project: C++ Quant Trading Engine
+# C++ Quant Trading Engine
 
 ## Tech Stack
 
@@ -47,53 +47,84 @@ The Black-Scholes model is a mathematical model for the dynamics of a financial 
 
 **European Call Option Price (C):**
 
-`C = S * N(d1) - K * e^(-rT) * N(d2)`
+$$C = S \cdot \Phi(d_1) - K \cdot e^{-rT} \cdot \Phi(d_2)$$
 
 **European Put Option Price (P):**
 
-`P = K * e^(-rT) * N(-d2) - S * N(-d1)`
+$$P = K \cdot e^{-rT} \cdot \Phi(-d_2) - S \cdot \Phi(-d_1)$$
+
+**Intermediate Variables**
+
+$$d_1 = \frac{\ln\left(\dfrac{S}{K}\right) + \left(r + \dfrac{\sigma^2}{2}\right) T}{\sigma \sqrt{T}}$$
+
+$$d_2 = d_1 - \sigma\sqrt{T}$$
+
+### Put-Call Parity
+
+For European options, the following relationship always holds (no-arbitrage):
+
+$$C - P = S - K \cdot e^{-rT}$$
+
+### Key Assumptions
+
+1. The stock follows **geometric Brownian motion** with constant drift and volatility.
+2. **No dividends** are paid during the option's life.
+3. Markets are **frictionless** — no transaction costs or taxes.
+4. The **risk-free rate** `r` and **volatility** `σ` are constant over the life of the option.
+5. **No arbitrage** opportunities exist.
+6. Options are **European-style** (exercisable only at expiration).
+
+### Quick Reference — Signs & Bounds
+
+- **Call price bounds:** `max(S − Ke^{−rT}, 0) ≤ C ≤ S`
+- **Put price bounds:** `max(Ke^{−rT} − S, 0) ≤ P ≤ Ke^{−rT}`
+- As `T → 0`: both prices converge to their intrinsic values.
+- As `σ → 0`: the option is worth its discounted intrinsic value.
 
 Where:
-
-`d1 = [ln(S/K) + (r + (σ^2)/2) * T] / (σ * √T)`
-`d2 = d1 - σ * √T`
-
-And:
 *   `S`: Current stock price
 *   `K`: Option strike price
 *   `T`: Time to expiration (in years)
 *   `r`: Risk-free interest rate (annualized)
 *   `σ`: Volatility of the stock's returns
-*   `N(x)`: Cumulative standard normal distribution function
+*   `Φ(x)`: Cumulative standard normal distribution function
 *   `e`: Euler's number (base of the natural logarithm)
 *   `ln`: Natural logarithm
 
 ### Volume Weighted Average Price (VWAP) Formula
 
-`VWAP = (Σ (Price * Volume)) / (Σ Volume)`
+For options, VWAP is computed using the **option price** weighted by number of contracts:
+
+$$VWAP = \frac{\sum (OptionPrice \times Contracts)}{\sum Contracts}$$
 
 Where:
-*   `Price`: Price of a trade
-*   `Volume`: Volume of a trade
+*   `OptionPrice`: Black-Scholes price of the option at time of trade
+*   `Contracts`: Number of option contracts traded
 *   `Σ`: Summation
 
-### Profit & Loss (P&L) Formula (Simple Example)
+### Profit & Loss (P&L) Formula
 
 For a single stock trade:
 
-`P&L = (Selling Price - Buying Price) * Number of Shares`
+`P&L = (SellingPrice - BuyingPrice) * NumberOfShares`
 
 For an option position:
 
-`P&L = (Current Option Price - Purchase Price) * Number of Contracts * Multiplier`
+`P&L = (CurrentOptionPrice - EntryOptionPrice) * NumberOfContracts * Multiplier`
+
+Where `Multiplier = 100` for standard equity options (each contract represents 100 shares).
+
+**Position value:**
+
+$$PositionValue = CurrentOptionPrice \times NumberOfContracts \times Multiplier$$
 
 ## How to Run the Program
 
-To compile and run this C++ quantitative trading engine, follow these steps:
+To compile and run this C++ quantitative trading engine, follow these steps.
 
 ### Prerequisites
 
-YouYou will need the following installed on your system:
+You will need the following installed on your system:
 *   **CMake:** Version 3.20 or higher. Used for managing the build process.
 *   **A C++ Compiler:** Supporting C++17 standard (e.g., GCC, Clang).
 
@@ -124,22 +155,28 @@ After building, you can run the executable directly from the `build` directory. 
 
 **Example Usage:**
 
-To price a European Call option for ticker `APPL` with a strike price of `100` and `11` contracts:
-
+Minimum required arguments only (defaults apply for K, T, σ, r):
 ```bash
-./QuantTradingEngine call APPL 100 11
+./QuantTradingEngine call AAPL 154.5 10
 ```
 
-To price a European Put option:
-
+Specifying a custom strike near the spot:
 ```bash
-./QuantTradingEngine put MSFT 200 5
+./QuantTradingEngine call AAPL 154.5 10 150.0
 ```
 
-To reset any stored portfolio data (if applicable):
+Specifying strike, expiry and volatility:
+```bash
+./QuantTradingEngine call MME 100.5 500 100.0 0.5 0.28
+```
 
+Full control over all parameters:
+```bash
+./QuantTradingEngine put MSFT 200.0 5 200.0 0.25 0.30 0.04
+```
+
+Reset all stored position and analytics data:
 ```bash
 ./QuantTradingEngine reset
 ```
-
-**Note:** The exact arguments and their order might vary depending on the specific implementation within `main.cpp`. Refer to the program's usage message (if available by running `./QuantTradingEngine` without arguments) for precise instructions.
+> **Note:** The fourth argument is the **spot price** of the underlying asset, the fifth is the **number of contracts** and the last argument is **interest rate**. Refer to the program's usage message (run `./QuantTradingEngine` without arguments) for precise instructions.
